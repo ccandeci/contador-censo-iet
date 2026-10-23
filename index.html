@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Contador de censo · IET</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f7f8;--surface:#fff;--ink:#12333a;--mut:#5b747a;--line:#d9d9d9;--pri:#0c6c7d;--onpri:#fff;--gray:#d9d9d9;--ongray:#12333a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a1d;--surface:#16272b;--ink:#e8f1f2;--mut:#9bb3b8;--line:#2c4247;--pri:#1f8ea3;--gray:#34494e;--ongray:#e8f1f2;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1a1d;--surface:#16272b;--ink:#e8f1f2;--mut:#9bb3b8;--line:#2c4247;--pri:#1f8ea3;--gray:#34494e;--ongray:#e8f1f2;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.4 "Be Vietnam Pro",system-ui,sans-serif;touch-action:manipulation}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--pri);z-index:10}
+h1,h2,.num,.logo b,button{font-family:Montserrat,"Be Vietnam Pro",system-ui,sans-serif}
+.wrap{max-width:520px;margin:0 auto;padding:16px 16px 40px}
+.logo{display:flex;align-items:center;gap:10px}.logo b{font-size:34px;font-weight:800;letter-spacing:-1px;line-height:1}
+.logo span{font-size:9px;letter-spacing:.5px;line-height:1.25;font-weight:600;opacity:.9}
+.hero{background:var(--pri);color:var(--onpri);border-radius:18px;padding:18px;margin-bottom:16px}
+.hero h1{font-size:20px;margin:12px 0 2px}.hero p{margin:0;font-size:14px;opacity:.9}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:14px}
+h2{font-size:14px;margin:0 0 10px;color:var(--pri);text-transform:uppercase;letter-spacing:.6px}
+label{display:block;font-size:13px;color:var(--mut);margin:10px 0 4px}label:first-of-type{margin-top:0}
+input,select{width:100%;font:inherit;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+input:focus,select:focus{outline:2px solid var(--pri);border-color:var(--pri)}
+.row{display:flex;gap:8px}.row input{flex:1}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.chip{border:0;border-radius:99px;padding:8px 12px;background:var(--gray);color:var(--ongray);font-size:14px;font-weight:600}
+.btn{border:0;border-radius:12px;padding:13px 16px;font-size:15px;font-weight:700;background:var(--pri);color:var(--onpri)}
+.btn.alt{background:var(--gray);color:var(--ongray)}.btn.big{width:100%;padding:17px;font-size:17px}
+.btn:disabled{opacity:.6}
+.hint{font-size:12px;color:var(--mut);margin:8px 0 0}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:11;background:var(--pri);color:var(--onpri);padding:10px 14px}
+.hr{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.hr .meta{font-size:12px;opacity:.9;text-align:right;line-height:1.2}.hr .meta b{font-family:Montserrat;font-size:17px;display:block}
+.hr .fin{background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:10px;padding:9px 12px;font-weight:700;font-size:13px}
+.seg{display:flex;gap:6px;margin-top:10px}
+.seg button{flex:1;border:2px solid rgba(255,255,255,.45);background:transparent;color:#fff;border-radius:12px;padding:9px 6px;font-size:14px;font-weight:700}
+.seg button small{display:block;font-weight:500;font-size:11px;opacity:.85}
+.seg button.on{background:#fff;color:#0c6c7d;border-color:#fff}
+.grid{display:grid;grid-template-columns:1fr;gap:10px;max-width:520px;margin:0 auto;padding:10px 10px 90px;gap:8px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:12px;text-align:center}
+.card .nm{font-weight:600;font-size:15px;overflow-wrap:anywhere}
+.card .num{font-size:44px;font-weight:800;line-height:1.1;margin:2px 0}
+.card .tot{font-size:11px;color:var(--mut);margin-bottom:8px}
+.pm{display:flex;gap:8px}.pm button{border:0;border-radius:14px;height:62px;font-size:30px;font-weight:700}
+.pm .p{flex:2;background:var(--pri);color:var(--onpri)}.pm .p:active{filter:brightness(.85);transform:scale(.97)}
+.pm .m{flex:1;background:var(--gray);color:var(--ongray)}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));z-index:11}
+.bar div{max-width:520px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:right}
+th:first-child,td:first-child{text-align:left}th{color:var(--mut);font-weight:600;font-size:12px}tfoot td{font-weight:700}
+.scroll{overflow-x:auto}
+.card .nm{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;text-align:left}
+.cells{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.cell{position:relative}
+.cell .p{width:100%;min-height:96px;border:0;border-radius:16px;background:var(--pri);color:var(--onpri);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:6px}
+.cell .p:active{filter:brightness(.85);transform:scale(.97)}
+.cell .sl{font-size:12px;font-weight:600;opacity:.9}
+.cell .num{font-size:40px;font-weight:800;line-height:1.1;margin:0}
+.card{display:grid;grid-template-columns:82px 1fr;align-items:center;gap:8px;padding:6px 6px 6px 10px}
+.card .nm{flex-direction:column;align-items:flex-start;justify-content:center;margin:0;font-size:14px;line-height:1.15}
+.card .tot{margin:2px 0 0}
+.cells{grid-template-columns:repeat(auto-fit,minmax(104px,1fr));gap:6px}
+.cell{display:flex;gap:4px}
+.card .cell .p{flex:1;min-width:0;min-height:68px;border-radius:14px;padding:4px}
+.cell .sl{font-size:11px;line-height:1.1;text-align:center;overflow-wrap:anywhere}
+.cell .num{font-size:34px}
+.card{border-left:6px solid var(--c,var(--pri))}
+.card .cell .p{background:var(--c,var(--pri));color:#fff}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px}
+.cell .m{position:static;flex:none;width:32px;height:auto;border:0;border-radius:10px;background:var(--gray);color:var(--ongray);font-size:20px;font-weight:700}.kv{font-size:14px;color:var(--mut)}.kv b{color:var(--ink)}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:99px;font-size:14px;z-index:20;max-width:90%;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="toast" id="toast"></div>
+<script>
+const KEY="iet-censo-v1";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pad=n=>String(n).padStart(2,"0");
+const hms=t=>{const d=new Date(t);return pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds())};
+const today=()=>{const d=new Date();return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())};
+const dmy=i=>i.split("-").reverse().join("/");
+const COL=["#1565c0","#ef6c00","#2e7d32","#d32f2f","#7b1fa2","#00838f","#d81b60","#546e7a"];
+const CLIMAS=["Despejado","Parcialmente nublado","Nublado","Llovizna","Lluvia","Tormenta"];
+const DEF=()=>({stage:"setup",censista:"",fecha:today(),clima:"Despejado",puesto:"",sentidos:["Norte-Sur","Sur-Norte"],modos:["Auto","Moto","Bicicleta","Colectivo","Camión","Peatón"],recs:[],cur:0,t0:0,t1:0,sent:false});
+let S=load(),armed=false,sending=false;
+function load(){try{const j=JSON.parse(localStorage.getItem(KEY));if(j&&j.stage)return Object.assign(DEF(),j)}catch(e){}return DEF()}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("show");clearTimeout(toast.h);toast.h=setTimeout(()=>el.classList.remove("show"),2200)}
+const cnt=(m,s)=>S.recs.filter(r=>r.m===m&&r.s===s).length;
+const tot=m=>S.recs.filter(r=>r.m===m).length;
+const el=()=>{let s=Math.floor(((S.stage==="done"?S.t1:Date.now())-S.t0)/1000);return pad(Math.floor(s/3600))+":"+pad(Math.floor(s%3600/60))+":"+pad(s%60)};
+
+function list(k,label,ph){
+ return `<div class="panel"><h2>${label}</h2><div class="chips">${S[k].map((v,i)=>`<button class="chip" data-act="del" data-l="${k}" data-i="${i}">${k==="modos"?`<i class="dot" style="background:${COL[i%COL.length]}"></i>`:""}${esc(v)} ✕</button>`).join("")||'<span class="hint">Todavía no cargaste ninguno</span>'}</div>
+ <div class="row"><input id="add-${k}" placeholder="${ph}" maxlength="30"><button class="btn alt" data-act="add" data-l="${k}">Agregar</button></div></div>`;
+}
+function setup(){
+ return `<main class="wrap"><div class="hero"><div class="logo"><b>iet</b><span>INSTITUTO DE ESTUDIOS<br>DE TRANSPORTE</span></div><h1>Contador de censo</h1><p>Completá los datos y armá tus botones de conteo.</p></div>
+ <div class="panel"><h2>Datos del conteo</h2>
+ <label>Censista</label><input data-k="censista" value="${esc(S.censista)}" placeholder="Nombre y apellido">
+ <label>Día</label><input type="date" data-k="fecha" value="${S.fecha}">
+ <label>Clima</label><select data-k="clima">${CLIMAS.map(c=>`<option${c===S.clima?" selected":""}>${c}</option>`).join("")}</select>
+ <label>Puesto (nº)</label><input data-k="puesto" value="${esc(S.puesto)}" placeholder="Ej.: 12"></div>
+ ${list("sentidos","Sentidos de circulación","Ej.: Este-Oeste")}
+ ${list("modos","Modos / tipos de vehículo","Ej.: Taxi")}
+ <button class="btn big" data-act="start">Comenzar conteo</button>
+ <p class="hint">Todo se guarda en este dispositivo: si se cierra la página, no perdés el conteo.</p></main>`;
+}
+function count(){
+ const l=S.recs[S.recs.length-1];
+ return `<header class="top"><div class="hr"><div class="logo"><b>iet</b></div><div class="meta">${esc(S.puesto)}<b id="tm">${el()}</b></div><button class="fin" data-act="finish">Finalizar</button></div>
+ </header>
+ <div class="grid">${S.modos.map((m,i)=>`<div class="card" style="--c:${COL[i%COL.length]}"><div class="nm">${esc(m)}<span class="tot">Total ${tot(m)}</span></div><div class="cells">${S.sentidos.map((v,j)=>`<div class="cell"><button class="p" data-act="plus" data-i="${i}" data-j="${j}" aria-label="Sumar ${esc(m)} ${esc(v)}"><span class="sl">${esc(v)}</span><span class="num">${cnt(m,v)}</span></button><button class="m" data-act="minus" data-i="${i}" data-j="${j}" aria-label="Restar ${esc(m)} ${esc(v)}">−</button></div>`).join("")}</div></div>`).join("")}</div>
+ <div class="bar"><div><span>${l?`Último: <b>${esc(l.m)}</b> · ${esc(l.s)} · ${hms(l.t)}`:"Tocá + para registrar"}</span>${l?'<button class="btn alt" data-act="undo">Deshacer</button>':""}</div></div>`;
+}
+function done(){
+ return `<main class="wrap"><div class="hero"><div class="logo"><b>iet</b><span>INSTITUTO DE ESTUDIOS<br>DE TRANSPORTE</span></div><h1>Conteo finalizado</h1><p>${S.recs.length} registros · duración ${el()}</p></div>
+ <div class="panel"><h2>Datos</h2><div class="kv">Puesto: <b>${esc(S.puesto)}</b><br>Censista: <b>${esc(S.censista)}</b><br>Día: <b>${dmy(S.fecha)}</b> · Clima: <b>${esc(S.clima)}</b><br>Horario: <b>${hms(S.t0)}</b> a <b>${hms(S.t1)}</b></div></div>
+ <div class="panel"><h2>Resumen</h2><div class="scroll"><table><thead><tr><th>Modo</th>${S.sentidos.map(v=>`<th>${esc(v)}</th>`).join("")}<th>Total</th></tr></thead><tbody>
+ ${S.modos.map(m=>`<tr><td>${esc(m)}</td>${S.sentidos.map(v=>`<td>${cnt(m,v)}</td>`).join("")}<td>${tot(m)}</td></tr>`).join("")}</tbody>
+ <tfoot><tr><td>Total</td>${S.sentidos.map(v=>`<td>${S.recs.filter(r=>r.s===v).length}</td>`).join("")}<td>${S.recs.length}</td></tr></tfoot></table></div></div>
+ <button class="btn big" data-act="xls"${S.sent?" disabled":""}>${S.sent?"Enviado ✓":"Enviar a la planilla"}</button>
+ <div class="row" style="margin-top:10px"><button class="btn alt" style="flex:1" data-act="back">Seguir contando</button><button class="btn alt" style="flex:1" data-act="new">${armed?"¿Seguro? Tocá de nuevo":"Nuevo conteo"}</button></div></main>`;
+}
+function render(){$("#app").innerHTML=S.stage==="setup"?setup():S.stage==="count"?count():done();window.scrollTo(0,0)}
+function refresh(){const y=scrollY;$("#app").innerHTML=S.stage==="count"?count():done();scrollTo(0,y)}
+
+function send(){
+ if(S.sent||sending)return;
+ if(!S.recs.length)return toast("No hay registros para enviar");
+ if(!(window.google&&google.script&&google.script.run))return toast("Abrí la app desde el link de Google");
+ sending=true;toast("Enviando…");
+ const p={censista:S.censista,fecha:dmy(S.fecha),clima:S.clima,puesto:S.puesto,recs:S.recs.map(r=>[hms(r.t),r.m,r.s])};
+ google.script.run
+  .withSuccessHandler(n=>{sending=false;S.sent=true;save();refresh();toast(n+" registros enviados")})
+  .withFailureHandler(()=>{sending=false;toast("No se pudo enviar. Revisá la conexión y reintentá")})
+  .guardar(p);
+}
+
+document.addEventListener("input",e=>{const k=e.target.dataset.k;if(k){S[k]=e.target.value;save()}});
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id&&e.target.id.startsWith("add-")){e.target.nextElementSibling.click()}});
+document.addEventListener("click",e=>{
+ const b=e.target.closest("[data-act]");if(!b)return;
+ const a=b.dataset.act,i=+b.dataset.i,l=b.dataset.l;
+ if(a!=="new"&&armed){armed=false}
+ if(a==="add"){const v=$("#add-"+l).value.trim();if(v&&!S[l].includes(v)){S[l].push(v);save();render();$("#add-"+l).focus()}}
+ else if(a==="del"){S[l].splice(i,1);save();render()}
+ else if(a==="start"){
+  if(!S.censista.trim()||!S.puesto.trim())return toast("Completá censista y puesto");
+  if(!S.modos.length||!S.sentidos.length)return toast("Cargá al menos un modo y un sentido");
+  Object.assign(S,{stage:"count",t0:Date.now(),recs:[],cur:0,sent:false});save();render()}
+ else if(a==="sent"){S.cur=i;save();refresh()}
+ else if(a==="plus"){S.recs.push({t:Date.now(),m:S.modos[i],s:S.sentidos[+b.dataset.j]});save();try{navigator.vibrate&&navigator.vibrate(25)}catch(x){}refresh()}
+ else if(a==="minus"){const m=S.modos[i],s=S.sentidos[+b.dataset.j];for(let j=S.recs.length-1;j>=0;j--)if(S.recs[j].m===m&&S.recs[j].s===s){S.recs.splice(j,1);break}save();refresh()}
+ else if(a==="undo"){S.recs.pop();save();refresh()}
+ else if(a==="finish"){S.stage="done";S.t1=Date.now();save();render()}
+ else if(a==="back"){S.stage="count";save();render()}
+ else if(a==="xls"){send()}
+ else if(a==="new"){if(!armed){armed=true;refresh();return}armed=false;const k={censista:S.censista,sentidos:S.sentidos,modos:S.modos};S=Object.assign(DEF(),k);save();render()}
+});
+setInterval(()=>{const t=$("#tm");if(t&&S.stage==="count")t.textContent=el()},1000);
+render();
+</script>
+</body>
+</html>
